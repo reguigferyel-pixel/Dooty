@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id         Int         @id @default(autoincrement())
+  nom        String
+  email      String      @unique
+  motDePasse String
+  creeLe     DateTime    @default(now())
+  taches     Tache[]
+  categories Categorie[]
+}
+
+model Categorie {
+  id            Int     @id @default(autoincrement())
+  nom           String
+  couleur       String  @default("#a78bfa")
+  utilisateurId Int
+  utilisateur   User    @relation(fields: [utilisateurId], references: [id])
+  taches        Tache[]
+
+  @@unique([nom, utilisateurId])
+}
+
+model Tache {
+  id            Int       @id @default(autoincrement())
+  titre         String
+  description   String?
+  statut        String    @default("A_FAIRE") // A_FAIRE, EN_COURS, TERMINEE
+  priorite      String    @default("MOYENNE") // BASSE, MOYENNE, HAUTE
+  echeance      DateTime?
+  categorieId   Int?
+  utilisateurId Int
+  creeLe        DateTime  @default(now())
+  majLe         DateTime  @updatedAt
+  utilisateur   User      @relation(fields: [utilisateurId], references: [id])
+  categorie     Categorie? @relation(fields: [categorieId], references: [id], onDelete: SetNull)
+}
