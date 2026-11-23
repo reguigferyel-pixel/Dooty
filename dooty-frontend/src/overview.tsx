@@ -1,3 +1,4 @@
+import api from './api/api';
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import {
   Archive,
@@ -1790,17 +1791,18 @@ function ProjectsPage({
   );
 }
 
-async function requestCoachResponse(_payload: {
-  message: string;
-  tasks: Task[];
-  conversation: ChatMessage[];
-}): Promise<string> {
-  await new Promise((resolve) => window.setTimeout(resolve, 700));
-  throw new Error(
-    "Le service d’IA n’est pas encore connecté. Configurez votre API pour recevoir une réponse.",
-  );
+async function requestCoachResponse(payload: { message: string; tasks: Task[]; conversation: any }): Promise<string> {
+  try {
+    const response = await api.post('/chatbot', {
+      message: payload.message,
+      tasks: payload.tasks
+    });
+    return response.data.reply;
+  } catch (error) {
+    console.error("Erreur Chatbot:", error);
+    throw new Error("Désolé, je n'arrive pas à me connecter au serveur.");
+  }
 }
-
 function ChatbotPage({ tasks }: { tasks: Task[] }) {
   const [conversations, setConversations] = useState(initialConversations);
   const [activeId, setActiveId] = useState(1);

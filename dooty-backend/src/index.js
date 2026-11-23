@@ -5,6 +5,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const tachesRoutes = require('./routes/taches');
 const categoriesRoutes = require('./routes/categories');
+const chatbotRoutes = require('./routes/chatbot');
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/taches', tachesRoutes);
 app.use('/api/categories', categoriesRoutes);
+app.use('/api/chatbot', chatbotRoutes);
 
 // Route de test
 app.get('/api/health', (req, res) => {
